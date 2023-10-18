@@ -3,27 +3,38 @@ import AddTask from "./AddTask.js";
 import TaskList from "./TaskList.js";
 
 function tasksReducer(tasks, action) {
-  if (action.type === "added") {
-    return [
-      ...tasks,
+  switch (action.type) {
+    case "added":
       {
-        id: action.id,
-        text: action.text,
-        done: false
+        return [
+          ...tasks,
+          {
+            id: action.id,
+            text: action.text,
+            done: false,
+          },
+        ];
       }
-    ];
-  } else if (action.type === "changed") {
-    return tasks.map((t) => {
-      if (t.id === action.task.id) {
-        return action.task;
-      } else {
-        return t;
+      break;
+    case "changed":
+      {
+        return tasks.map((t) => {
+          if (t.id === action.task.id) {
+            return action.task;
+          } else {
+            return t;
+          }
+        });
       }
-    });
-  } else if (action.type === "deleted") {
-    return tasks.filter((t) => t.id !== action.id);
-  } else {
-    throw Error("Unknown action: " + action.type);
+      break;
+    case "deleted":
+      {
+        return tasks.filter((t) => t.id !== action.id);
+      }
+      break;
+    default: {
+      throw Error("Unknown action: " + action.type);
+    }
   }
 }
 
@@ -34,14 +45,14 @@ export default function TaskApp() {
     dispatch({
       type: "added",
       id: nextId++,
-      text: text
+      text: text,
     });
   }
 
   function handleChangeTask(task) {
     dispatch({
       type: "changed",
-      task: task
+      task: task,
     });
   }
 
@@ -49,7 +60,7 @@ export default function TaskApp() {
     // "action" object:
     dispatch({
       type: "deleted",
-      id: taskId
+      id: taskId,
     });
   }
 
@@ -70,5 +81,5 @@ let nextId = 3;
 const initialTasks = [
   { id: 0, text: "Visit Kafka Museum", done: true },
   { id: 1, text: "Watch a puppet show", done: false },
-  { id: 2, text: "Lennon Wall pic", done: false }
+  { id: 2, text: "Lennon Wall pic", done: false },
 ];
