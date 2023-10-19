@@ -1,45 +1,10 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import AddTask from "./AddTask.js";
 import TaskList from "./TaskList.js";
-
-function tasksReducer(tasks, action) {
-  switch (action.type) {
-    case "added":
-      {
-        return [
-          ...tasks,
-          {
-            id: action.id,
-            text: action.text,
-            done: false,
-          },
-        ];
-      }
-      break;
-    case "changed":
-      {
-        return tasks.map((t) => {
-          if (t.id === action.task.id) {
-            return action.task;
-          } else {
-            return t;
-          }
-        });
-      }
-      break;
-    case "deleted":
-      {
-        return tasks.filter((t) => t.id !== action.id);
-      }
-      break;
-    default: {
-      throw Error("Unknown action: " + action.type);
-    }
-  }
-}
+import tasksReducer from "./tasksReducer.js";
 
 export default function TaskApp() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 
   function handleAddTask(text) {
     dispatch({
